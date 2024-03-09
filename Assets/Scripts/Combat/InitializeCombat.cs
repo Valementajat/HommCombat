@@ -8,13 +8,16 @@ public class InitializeCombat : MonoBehaviour
 
     public  CombatManager combatManager;
     private  CreatePlayerArmy createPlayerArmy;
-
+    public CameraMovement cameraMovement;
 
     //public CombatManager combatManager; // Assuming you have a CombatManager script
 
 
     public int combatWidth = 16;
     public int combatHeight = 14;
+
+    private Vector2 combatAreaSize;
+
     void Start()
     {
 
@@ -28,8 +31,9 @@ public class InitializeCombat : MonoBehaviour
         {
             gridManager.InitializeGrid(combatWidth, combatHeight);
             tilemapController.Initialize(combatWidth, combatHeight);
-            gridManager.DisplayGridInConsole();
-
+            //gridManager.DisplayGridInConsole();
+            combatAreaSize = new Vector2(combatWidth, combatHeight);
+            cameraMovement.AdjustCamera();
 
             // For testing purposes
             Player player = new ();
@@ -55,5 +59,18 @@ public class InitializeCombat : MonoBehaviour
         {
             Debug.LogError("GridManager or TilemapController not assigned in the Inspector.");
         }
+
+        
+    }
+    public Vector2 GetCombatAreaSize()
+    {
+        return combatAreaSize;
+    }
+
+    public void RestartGame(){
+        
+        
+        InitializeGame();
+
     }
 }

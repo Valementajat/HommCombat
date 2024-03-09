@@ -5,8 +5,10 @@ public class CombatGridManager : MonoBehaviour
 {
     public static CombatGridManager Instance { get; private set; }
 
-    private bool[,] gridOccupied; // To track occupied positions
+    public bool[,] gridOccupied; // To track occupied positions
 
+    public int GridWidth => gridOccupied.GetLength(0);
+    public int GridHeight => gridOccupied.GetLength(1);
     void Awake()
     {
         Instance = this;

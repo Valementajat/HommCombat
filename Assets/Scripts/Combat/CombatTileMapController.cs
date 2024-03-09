@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
+using System.Collections;
 
 public class CombatTilemapController : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class CombatTilemapController : MonoBehaviour
     private string modelsFolder = "PrefabModels";
 
     private GameObject[] modelsToPlace;
+    public CombatGridManager gridManager;
+
+    private Vector3Int clickedTilePosition; // Variable to store the clicked tile position
+
 
     public int combatWidth = 16;
     public int combatHeight = 14;
@@ -23,6 +28,7 @@ public class CombatTilemapController : MonoBehaviour
         {
             LoadModelsFromFolder(modelsFolder);
             StartCombat();
+            SetInactiveTiles();
         }
         else
         {
@@ -34,12 +40,6 @@ public class CombatTilemapController : MonoBehaviour
     {
         // Load all prefabs from the specified folder within the "Resources" directory
          Object[] loadedModels = Resources.LoadAll("PrefabModels", typeof(Object));
-         
-
-            // Log the names of each loaded object
-            foreach (var obj in loadedModels)
-            {
-            }
 
         // Convert the array of loaded models to a List<GameObject>
         modelsToPlace = System.Array.ConvertAll(loadedModels, item => (GameObject)item);
@@ -89,7 +89,7 @@ public class CombatTilemapController : MonoBehaviour
 
     // Adjust the position based on the plane's pivot offset
     bottomLeftPosition += new Vector3(combatPlanePrefab.GetComponent<Renderer>().bounds.extents.x, 0, combatPlanePrefab.GetComponent<Renderer>().bounds.extents.z);
-    bottomLeftPosition.y += tilemap.cellGap.y;
+    bottomLeftPosition.y -= 0.01f;
     // Set the position of the plane to the bottom-left corner of the bottom-left tile
     combatPlanePrefab.transform.position = bottomLeftPosition;
 }
@@ -97,6 +97,11 @@ public class CombatTilemapController : MonoBehaviour
 
   void PlaceRandomModels()
 {
+    int childs = combatPlanePrefab.transform.childCount;
+    for (int i = childs - 1; i >= 0; i--)
+{
+    GameObject.Destroy(combatPlanePrefab.transform.GetChild(i).gameObject);
+}
     int numberOfModelsToPlace = Random.Range(2, 6);
 
     List<GameObject> shuffledModels = new List<GameObject>(modelsToPlace);
@@ -150,7 +155,8 @@ public class CombatTilemapController : MonoBehaviour
                     centerPosition.x -= (totalWidth - 1) / 2f;
                     centerPosition.z += (totalHeight - 1) / 2f;
                     
-                    Instantiate(modelToPlace, centerPosition, randomRotation);
+                    GameObject modelInstance = Instantiate(modelToPlace, centerPosition, randomRotation);
+                    modelInstance.transform.parent = combatPlanePrefab.transform;
                     modelsPlaced++;
 
                     MarkUsedPositions(tilePosition, objectSize,usedPositions );
@@ -226,4 +232,64 @@ bool InTheGrid(Vector3Int currentTile)
             list[n] = value;
         }
     }
+
+ public void SetInactiveTiles()
+{
+    BoundsInt bounds = tilemap.cellBounds;
+
+    for (int x = bounds.xMin; x < bounds.xMax; x++)
+    {
+        for (int y = bounds.yMin; y < bounds.yMax; y++)
+        {
+            Vector3Int tilePosition = new Vector3Int(x, y, 0);
+
+            // Check if the tile is free (not occupied)
+            
+                // Load the Tile from the Resources folder
+                Tile inactiveTile = Resources.Load<Tile>("Sprites/GroundTileInactive");
+
+                // Set the tile to the inactive tile
+                tilemap.SetTile(tilePosition, inactiveTile);
+            
+        }
+    }
+}
+
+public void SetActiveTiles(Vector3Int baseTilePosition, int speed)
+{
+    BoundsInt bounds = tilemap.cellBounds;
+
+    for (int x = bounds.xMin; x < bounds.xMax; x++)
+    {
+        for (int y = bounds.yMin; y < bounds.yMax; y++)
+        {
+            Vector3Int tilePosition = new Vector3Int(x, y, 0);
+
+            // Check if the tile is free (not occupied)
+            if (!CombatGridManager.Instance.IsPositionOccupied(tilePosition))
+            {
+                // Check if the tile is within the creature's movement range based on speed
+                if (IsTileWithinRange(baseTilePosition, tilePosition, speed))
+                {
+                    // Load the Tile from the Resources folder
+                    Tile activeTile = Resources.Load<Tile>("Sprites/GroundTileActive");
+
+                    // Set the tile to the active tile
+                    tilemap.SetTile(tilePosition, activeTile);
+                }
+            }
+        }
+    }
+}
+
+    public bool IsTileWithinRange(Vector3Int baseTile, Vector3Int targetTile, int range)
+    {
+     
+        int distance = Mathf.Abs(targetTile.x - baseTile.x) + Mathf.Abs(targetTile.y - baseTile.y);
+        return distance <= range;
+    }
+
+
+
+
 }

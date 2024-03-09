@@ -9,13 +9,13 @@ public class CreatePlayerArmy
     {
         int randomValue = random.Next(1, 5);
         // Add 4 Skeletons to the player's army
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < count; i++)
         {
             
-            Skeleton skeletonUnit = new(randomValue); 
+            Skeleton skeletonUnit = new(random.Next(1, 5)); 
             player.Heroes[0].AddUnitToArmy(skeletonUnit);
         }
-            DeathSpider deathSpider = new(random.Next(1, 5)); 
+            /* DeathSpider deathSpider = new(random.Next(1, 5)); 
             player.Heroes[0].AddUnitToArmy(deathSpider);
 
             EbonSpider ebonySpider = new(random.Next(1, 5)); 
@@ -41,6 +41,6 @@ public class CreatePlayerArmy
             player.Heroes[0].AddUnitToArmy(archlich);
 
             SkeletonArcher skeletonArcher = new(random.Next(1, 5)); 
-            player.Heroes[0].AddUnitToArmy(skeletonArcher);
+            player.Heroes[0].AddUnitToArmy(skeletonArcher); */
     }
 }

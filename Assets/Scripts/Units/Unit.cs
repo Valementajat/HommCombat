@@ -24,8 +24,14 @@ public abstract class Unit
 
     public int AttackDamage => AttackDamagePerUnit * NumberOfUnits;
     public int Defense => DefensePerUnit * NumberOfUnits;
+    public bool IsPlayerUnit;
 
+    //Combat
+     public Vector3Int Position { get; set; }
     public Sprite UnitSprite { get; protected set; }
+
+    public GameObject UnitModel { get; protected set; }
+    public GameObject UnitObject { get;  set; }
 
 
     public Unit(string name, int hitPoints, int attackDamage, int defense, int initiative, int speed, int cost, int numberOfUnits)
@@ -40,6 +46,8 @@ public abstract class Unit
         Speed = speed;
         Cost = cost;
         UnitSprite = null;
+        IsPlayerUnit = false;
+        Position = Vector3Int.zero; 
     } 
 
     public virtual void Attack(Unit target)
