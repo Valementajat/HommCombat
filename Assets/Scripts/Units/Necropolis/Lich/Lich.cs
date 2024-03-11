@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 
 
 public class Lich  : RangedUnit
@@ -11,4 +11,4 @@ public class Lich  : RangedUnit
     }
 
     // You can add specific methods or properties for Infantry
-}
+} */

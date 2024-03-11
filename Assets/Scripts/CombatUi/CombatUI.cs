@@ -88,11 +88,7 @@ public class CombatUI : MonoBehaviour
     }
 
 
-    void UpdateUnitList()
-    {
-        // Add any dynamic updates if needed
-    }
-
+    
      void ClearUnitDisplays()
     {
         // Destroy existing unit displays in the unitDisplayParent
@@ -102,14 +98,4 @@ public class CombatUI : MonoBehaviour
         }
     }
 
-
-    public void OnWaitImageClicked()
-    {
-        // Implement logic for when the Wait image is clicked
-    }
-
-    public void OnDefendImageClicked()
-    {
-        // Implement logic for when the Defend image is clicked
-    }
 }

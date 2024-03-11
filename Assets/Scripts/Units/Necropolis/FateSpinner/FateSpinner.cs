@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 
 
 public class FateSpinner : Unit
@@ -11,4 +11,4 @@ public class FateSpinner : Unit
     }
 
     // You can add specific methods or properties for Infantry
-}
+} */

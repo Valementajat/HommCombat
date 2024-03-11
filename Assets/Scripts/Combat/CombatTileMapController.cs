@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using System.Collections;
+using System.Security.Cryptography;
 
 public class CombatTilemapController : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class CombatTilemapController : MonoBehaviour
 
     private GameObject[] modelsToPlace;
     public CombatGridManager gridManager;
-
-    private Vector3Int clickedTilePosition; // Variable to store the clicked tile position
+    public CombatManager combatManager;
+     private Vector3Int clickedTilePosition; // Variable to store the clicked tile position
 
 
     public int combatWidth = 16;
@@ -258,7 +259,7 @@ bool InTheGrid(Vector3Int currentTile)
 public void SetActiveTiles(Vector3Int baseTilePosition, int speed)
 {
     BoundsInt bounds = tilemap.cellBounds;
-
+    Unit currentUnit = combatManager.currentUnit;
     for (int x = bounds.xMin; x < bounds.xMax; x++)
     {
         for (int y = bounds.yMin; y < bounds.yMax; y++)
@@ -271,25 +272,58 @@ public void SetActiveTiles(Vector3Int baseTilePosition, int speed)
                 // Check if the tile is within the creature's movement range based on speed
                 if (IsTileWithinRange(baseTilePosition, tilePosition, speed))
                 {
+                   
                     // Load the Tile from the Resources folder
                     Tile activeTile = Resources.Load<Tile>("Sprites/GroundTileActive");
 
                     // Set the tile to the active tile
                     tilemap.SetTile(tilePosition, activeTile);
+                    IsAdjacentEnemyUnit(tilePosition);
                 }
             }
+             
         }
     }
 }
 
     public bool IsTileWithinRange(Vector3Int baseTile, Vector3Int targetTile, int range)
+{
+    int distanceX = Mathf.Abs(targetTile.x - baseTile.x);
+    int distanceY = Mathf.Abs(targetTile.y - baseTile.y);
+
+    // Calculate the diagonal distance using Pythagorean theorem
+    float diagonalDistance = Mathf.Sqrt(distanceX * distanceX + distanceY * distanceY);
+
+    return diagonalDistance <= range;
+}
+
+public void SetTileAvailable(Vector3Int position){
+gridManager.SetPositionOccupied(position, false);
+
+
+}
+
+    public void IsAdjacentEnemyUnit(Vector3Int tilePosition)
     {
-     
-        int distance = Mathf.Abs(targetTile.x - baseTile.x) + Mathf.Abs(targetTile.y - baseTile.y);
-        return distance <= range;
+        Tile attackTile = Resources.Load<Tile>("Sprites/GroundTileAttackV2");
+        // Check if there is an enemy unit adjacent to the specified tile position
+        foreach (Unit unit in combatManager.turnOrder)
+        {
+            // true it's players turn
+           
+                if (!unit.IsPlayerUnit)
+                {
+                    // Check if the unit is adjacent to the specified tile position
+                    if (unit.IsAdjacent(tilePosition))
+                    {
+                    tilemap.SetTile(unit.Position, attackTile);
+
+                    }
+                }
+        }
+
+        // No adjacent enemy units found
     }
-
-
 
 
 }

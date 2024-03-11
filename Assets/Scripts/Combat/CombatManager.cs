@@ -82,22 +82,23 @@ public class CombatManager : MonoBehaviour
     }
   IEnumerator CombatLoop()
     {
-        Debug.Log("Testing combatLoop");
+       // Debug.Log("Testing combatLoop");
         while (!IsCombatOver())
         {
             currentUnit = GetCurrentUnit();
 
 
             // Set tiles active for unit
-            tileMapController.SetActiveTiles(currentUnit.Position, currentUnit.Speed);
             if (currentUnit.IsPlayerUnit)
             {
+                // Set tiles active for unit
+                tileMapController.SetActiveTiles(currentUnit.Position, currentUnit.Speed);
                 StartCoroutine(unitMovement.WaitForTileClick());
                 unitMovement.InitializeBtns();
 
 
                 // Handle player-controlled Hero actions (e.g., player input)
-                Debug.Log(currentTurnIndex+"Players turn");
+               // Debug.Log(currentTurnIndex+"Players turn");
                //yield return WaitForKeyPress();
                // unitMovement.HandleUnitMovement(currentUnit);
 
@@ -108,9 +109,9 @@ public class CombatManager : MonoBehaviour
             {
                 // Handle enemy AI actions
                 enemyAi.AiTurn(currentUnit);
-                Debug.Log(currentTurnIndex + " AIs turn");
+                //Debug.Log(currentTurnIndex + " AIs turn");
                 
-                yield return new WaitForSeconds(1f);  // Optional delay between turns
+                yield return new WaitForSeconds(0.01f);  // Optional delay between turns
             }
             // Jesus christ is my NiGga
              // Optional delay between turns
@@ -119,10 +120,15 @@ public class CombatManager : MonoBehaviour
             if(turnOrder.Count == 0){
             currentTurnIndex = 0;
             currentRoundIndex++;
+            foreach(Unit unit in allUnitsInPlay){
+            unit.Retaliated = false;
+
+            }
             foreach (Unit unit in allUnitsInPlay)
             {
                 turnOrder.Add(unit);
             }
+            
 
             Debug.Log("It is Round: " + currentRoundIndex);
 
@@ -136,7 +142,7 @@ public class CombatManager : MonoBehaviour
             // Switch to the next turn
             combatUI.InstantiateUnitDisplays(turnOrder);
 
-            yield return new WaitForSeconds(1f); 
+            yield return new WaitForSeconds(0.01f); 
 
         }
         
@@ -157,8 +163,26 @@ public void MoveCurrentUnitToBack()
         combatUI.InstantiateUnitDisplays(turnOrder);
     }
 }
+
+public void RemoveDeadUnit(Unit deadUnit)
+{
+    // Remove the dead unit from the turnOrder
+    turnOrder.Remove(deadUnit);
+    allUnitsInPlay.Remove(deadUnit);
+
+    // Destroy the game object associated with the dead unit
+    if (deadUnit.UnitObject != null)
+    {
+        Destroy(deadUnit.UnitObject);
+    }
+
+    // Update the combat grid to make the dead unit's position available
+    tileMapController.SetTileAvailable(deadUnit.Position);
+}
+
 private bool IsCombatOver()
 {
+
     // Combat is over if either all player units or all enemy units are defeated
     return playerUnits.Count == 0 || enemyUnits.Count == 0;
 }

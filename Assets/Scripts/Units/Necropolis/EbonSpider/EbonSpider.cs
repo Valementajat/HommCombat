@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 
 
 public class EbonSpider : Unit
@@ -11,4 +11,4 @@ public class EbonSpider : Unit
     }
 
     // You can add specific methods or properties for Infantry
-}
+} */

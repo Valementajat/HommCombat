@@ -39,11 +39,11 @@ public class InitializeCombat : MonoBehaviour
             Player player = new ();
             player.AddHero(new Hero("Necromancer"));
             createPlayerArmy = new CreatePlayerArmy();
-            createPlayerArmy.CreateArmy(player, 5); 
+            createPlayerArmy.CreateArmy(player, 2); 
 
             Player enemyplayer = new ();
             enemyplayer.AddHero(new Hero("Knight"));
-            createPlayerArmy.CreateArmy(enemyplayer, 4); 
+            createPlayerArmy.CreateArmy(enemyplayer, 3); 
             // for testing purposes
 
 

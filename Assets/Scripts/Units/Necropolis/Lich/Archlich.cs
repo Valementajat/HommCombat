@@ -1,4 +1,4 @@
-using UnityEngine;
+/* using UnityEngine;
 
 
 public class Archlich  : RangedUnit
@@ -11,4 +11,4 @@ public class Archlich  : RangedUnit
     }
 
     // You can add specific methods or properties for Infantry
-}
+} */
