@@ -6,7 +6,7 @@ public class Skeleton : Unit
 {
         private static readonly System.Random random = new System.Random();
 
-    public Skeleton(int numberOfUnits) : base("Skeleton", 4, 3, 2, 10, 20, 19, numberOfUnits, new int[] { 1, 1 })
+    public Skeleton(int numberOfUnits) : base("Skeleton", 4, 3, 2, 10, 4, 19, numberOfUnits, new int[] { 1, 1 })
     {
         //random.Next(1, 5)
         // Additional setup specific to Infantry
@@ -15,5 +15,4 @@ public class Skeleton : Unit
        
     }
 
-    // You can add specific methods or properties for Infantry
 }

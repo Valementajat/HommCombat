@@ -90,7 +90,7 @@ public class CameraMovement : MonoBehaviour
             float planeSizeX = plane.GetComponent<Renderer>().bounds.size.x;
             float planeSizeZ = plane.GetComponent<Renderer>().bounds.size.z;
             clampedY = 15;
-            areaSize.x = 15f;
+            areaSize.x = 20f;
             areaSize.z = 15f;
             areaSizeZ = areaSize.z / 2f;
 

@@ -43,4 +43,16 @@ public class CreatePlayerArmy
             SkeletonArcher skeletonArcher = new(random.Next(1, 5)); 
             player.Heroes[0].AddUnitToArmy(skeletonArcher); */
     }
+
+    public void CreateArchers(Player player, int count)
+    {
+        int randomValue = random.Next(1, 5);
+        // Add 4 Skeletons to the player's army
+        for (int i = 0; i < count; i++)
+        {
+            
+            SkeletonArcher skeletonUnit = new(random.Next(1, 5)); 
+            player.Heroes[0].AddUnitToArmy(skeletonUnit);
+        }
+    }
 }

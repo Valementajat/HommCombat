@@ -313,11 +313,23 @@ gridManager.SetPositionOccupied(position, false);
            
                 if (!unit.IsPlayerUnit)
                 {
+                    if (combatManager.currentUnit is RangedUnit rangedUnit && rangedUnit.Ammo > 0 && !rangedUnit.IsAdjacentToEnemy(combatManager)){
+                        tilemap.SetTile(unit.Position, attackTile);
+                        rangedUnit.rangedAttack = true;
+                    } else {
+                        if (combatManager.currentUnit is RangedUnit RangedUnit)
+                        {
+                            // If the current unit is a RangedUnit but cannot perform a ranged attack due to insufficient ammo or lack of adjacent enemies
+                            // Set rangedAttack to false to indicate that a ranged attack is not possible
+                            RangedUnit.rangedAttack = false;
+                        }
                     // Check if the unit is adjacent to the specified tile position
-                    if (unit.IsAdjacent(tilePosition))
-                    {
-                    tilemap.SetTile(unit.Position, attackTile);
+                        if (unit.IsAdjacent(tilePosition))
+                        {
+                                                    
+                            tilemap.SetTile(unit.Position, attackTile);
 
+                        }
                     }
                 }
         }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -36,12 +37,24 @@ public class TileHoverManager : MonoBehaviour
             // You can add additional logic or UI feedback for the active tile here
         }
         else
+        { 
+            if (tile != null && tile.sprite.name == "GroundTileAttackV2" )
         {
+            SetAttackTileCursor();
+
+            
+        } else {
             SetDefaultCursor();
             // You can reset any additional UI feedback for the active tile here
         }
+        }
     }
-   
+
+    private void SetAttackTileCursor()
+    {
+        Cursor.SetCursor(attackCursor, Vector2.zero, CursorMode.Auto);
+    }
+
     private Tile GetTileUnderMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

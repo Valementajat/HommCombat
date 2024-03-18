@@ -8,6 +8,7 @@ public class Restart : MonoBehaviour
     // Start is called before the first frame update
     public Button btn;
      public InitializeCombat combatInitializer;
+     public CombatUI combatUi;
     void Start()
     {
 
@@ -16,6 +17,7 @@ public class Restart : MonoBehaviour
 
     // Update is called once per frame
     void RestartGame(){
-		 combatInitializer.RestartGame();
+        combatUi.CleanCombatEvent();
+		combatInitializer.RestartGame();
 	}
 }

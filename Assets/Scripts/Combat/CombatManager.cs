@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CombatManager : MonoBehaviour
@@ -77,11 +78,13 @@ public class CombatManager : MonoBehaviour
         currentRoundIndex = 1;
       
         combatUI.InstantiateUnitDisplays(turnOrder);
-
+        string startCombat = "Start of combat";
+        LogCombatEvent(startCombat);
         StartCoroutine(CombatLoop());
     }
   IEnumerator CombatLoop()
     {
+       
        // Debug.Log("Testing combatLoop");
         while (!IsCombatOver())
         {
@@ -91,6 +94,8 @@ public class CombatManager : MonoBehaviour
             // Set tiles active for unit
             if (currentUnit.IsPlayerUnit)
             {
+                string turnMessage = "It's player unit:" + currentUnit.Name + " turn";
+                LogCombatEvent(turnMessage);
                 // Set tiles active for unit
                 tileMapController.SetActiveTiles(currentUnit.Position, currentUnit.Speed);
                 StartCoroutine(unitMovement.WaitForTileClick());
@@ -107,7 +112,10 @@ public class CombatManager : MonoBehaviour
             }
             else
             {
+                string turnMessage = "It's enemy unit:" + currentUnit.Name + " turn";
+                LogCombatEvent(turnMessage);
                 // Handle enemy AI actions
+                // WaitForKeyPress();
                 enemyAi.AiTurn(currentUnit);
                 //Debug.Log(currentTurnIndex + " AIs turn");
                 
@@ -129,7 +137,8 @@ public class CombatManager : MonoBehaviour
                 turnOrder.Add(unit);
             }
             
-
+            string RoundMessage = "Round: " + currentRoundIndex;
+            LogCombatEvent(RoundMessage);
             Debug.Log("It is Round: " + currentRoundIndex);
 
             } else {
@@ -147,8 +156,18 @@ public class CombatManager : MonoBehaviour
         }
         
         // Handle combat end (e.g., victory, defeat)
-        Debug.Log("Combat is over!");
+        string COmbatOver = "Combat is over";
+        LogCombatEvent(COmbatOver);
     }
+
+/*     private void WaitForKeyPress()
+{
+    while (!Input.GetKeyDown(KeyCode.Space))
+    {
+        // Wait until space key is pressed
+    }
+}
+ */
 
 public void MoveCurrentUnitToBack()
 {
@@ -181,11 +200,14 @@ public void RemoveDeadUnit(Unit deadUnit)
 }
 
 private bool IsCombatOver()
-{
+    {
+        // Check if there are no more player or enemy units in the allUnitsInPlay list
+        bool noMorePlayerUnits = !allUnitsInPlay.Any(unit => unit.IsPlayerUnit);
+        bool noMoreEnemyUnits = !allUnitsInPlay.Any(unit => !unit.IsPlayerUnit);
 
-    // Combat is over if either all player units or all enemy units are defeated
-    return playerUnits.Count == 0 || enemyUnits.Count == 0;
-}
+        // Combat is over if either all player units or all enemy units are defeated
+        return noMorePlayerUnits || noMoreEnemyUnits;
+    }
 
 
 
@@ -218,5 +240,10 @@ private Unit GetCurrentUnit()
         // After sorting
         
     // Other methods as before
+}
+
+public void LogCombatEvent(string message){
+    combatUI.LogCombatEvent(message);
+
 }
 }

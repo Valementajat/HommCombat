@@ -61,43 +61,45 @@ public abstract class Unit
 
     public virtual void Attack(Unit target, CombatManager combatManager)
     {
-        Debug.Log(IsPlayerUnit + " : " + Name + ": Attack damage  "+  AttackDamage);
-        Debug.Log(  "False : " + Name + ": Defence "+  target.Defense);
-
-        /* float fuckshit = 1 + 0.05f * (AttackDamage - target.Defense);
-        float test = Mathf.Ceil(NumberOfUnits * random.Next(AttackDamageRange[0], AttackDamageRange[1]) * fuckshit);
-        Debug.Log("test: " + test); */
+     
         int damageDealt = (int)Mathf.Max(0, Mathf.Ceil(NumberOfUnits * random.Next(AttackDamageRange[0], AttackDamageRange[1]) * Mathf.Max(1 + 0.05f * (AttackDamage - target.Defense))), 0 );
-        Debug.Log(IsPlayerUnit + " : " + Name + ": Attacked with "+  damageDealt);
         target.TakeDamage(damageDealt, combatManager, this);
+
+        string attackMessage = $"{(IsPlayerUnit ? "Player" : "Enemy")} {Name} attacked {(target.IsPlayerUnit ? "Player" : "Enemy")} {target.Name} with {damageDealt} damage!";
+        combatManager.LogCombatEvent(attackMessage);
       
     }
 
     public virtual void Retaliate(Unit attacker, CombatManager combatManager)
+{
+    if (!Retaliated && !Attacker)
     {
-        if(!Retaliated && !Attacker){
-            Debug.Log(IsPlayerUnit + " : " +  Name + ": Retaliated");
-            Retaliated = true;
-            Attack(attacker, combatManager);
-        }
+        Retaliated = true;
+        
+        // Calculate retaliation damage
+         int damageDealt = (int)Mathf.Max(0, Mathf.Ceil(NumberOfUnits * random.Next(AttackDamageRange[0], AttackDamageRange[1]) * Mathf.Max(1 + 0.05f * (AttackDamage - attacker.Defense))), 0 );
+        attacker.TakeDamage(damageDealt, combatManager, this);
+      
 
+        // Deal retaliation damage to the attacker
+
+        // Log retaliation message
+        string retaliationMessage = $"{(IsPlayerUnit ? "Player" : "Enemy")} {Name} retaliated against {(attacker.IsPlayerUnit ? "Player" : "Enemy")} {attacker.Name} with {damageDealt} damage!";
+        combatManager.LogCombatEvent(retaliationMessage);
     }
+}
 
 
 //FIX
     public int TakeDamage(int amount, CombatManager combatManager, Unit attacker)
 {
-
-    Debug.Log(IsPlayerUnit + " : " + Name + " Hitpoints:  "+  HitPoints);
-
     HitPoints -= amount;
-
     // Ensure HitPoints don't go below zero
     HitPoints = Mathf.Max(0, HitPoints);
-    Debug.Log(IsPlayerUnit + " : " + Name + " Hitpoints:  "+  HitPoints);
     int unitsLost = (MaxHitPoints - HitPoints) / HitPointsPerUnit;
 
-    Debug.Log(Name + " unitsLost:  "+  unitsLost);
+string retaliationMessage = $"{(IsPlayerUnit ? "Player" : "Enemy")} {Name} Lost {unitsLost} Units";
+        combatManager.LogCombatEvent(retaliationMessage);
 
     
     // Update NumberOfUnits and clamp it to zero
@@ -111,6 +113,29 @@ public abstract class Unit
 
 
     Debug.Log($"Remaining Units: {NumberOfUnits}");
+    
+    return NumberOfUnits;
+}
+
+ public int TakeRangedDamage(int amount, CombatManager combatManager, Unit attacker)
+{
+    HitPoints -= amount;
+    // Ensure HitPoints don't go below zero
+    HitPoints = Mathf.Max(0, HitPoints);
+    int unitsLost = (MaxHitPoints - HitPoints) / HitPointsPerUnit;
+
+        string retaliationMessage = $"{(IsPlayerUnit ? "Player" : "Enemy")} {Name} Lost {unitsLost} Units";
+        combatManager.LogCombatEvent(retaliationMessage);
+
+    
+    // Update NumberOfUnits and clamp it to zero
+    NumberOfUnits = Mathf.Max(0, NumberOfUnits - unitsLost);
+    if (NumberOfUnits == 0){
+
+        combatManager.RemoveDeadUnit(this);
+    } 
+
+
     
     return NumberOfUnits;
 }

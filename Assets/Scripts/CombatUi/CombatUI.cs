@@ -11,10 +11,10 @@ public class CombatUI : MonoBehaviour
     public Transform unitDisplayParent; // Parent transform for instantiated unit displays
     public TextMeshProUGUI  unitListText; // Reference to your UI Text element
 
-    public Image  waitButton; // Reference to the Wait button
-    public Image  defendButton; // Reference to the Defend button
 
-   
+
+    public TextMeshProUGUI logText; 
+    private List<string> combatLog = new List<string>();
   
     public void InstantiateUnitDisplays(List<Unit> turnOrder)
 {
@@ -89,13 +89,48 @@ public class CombatUI : MonoBehaviour
 
 
     
-     void ClearUnitDisplays()
+    void ClearUnitDisplays()
     {
         // Destroy existing unit displays in the unitDisplayParent
         foreach (Transform child in unitDisplayParent)
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void LogCombatEvent(string eventMessage)
+    {
+        // Add the event message to the combat log
+        combatLog.Add(eventMessage);
+
+        if (combatLog.Count > 10)
+    {
+        // Remove the oldest log entries if the limit is exceeded
+        combatLog.RemoveAt(0);
+    }
+
+        // Update the log text to display the updated combat log
+        UpdateLogText();
+    }
+
+public void CleanCombatEvent()
+    {
+        // Add the event message to the combat log
+        combatLog = new List<string>();
+
+        // Update the log text to display the updated combat log
+        UpdateLogText();
+    }
+    void UpdateLogText()
+    {
+        // Concatenate all log entries into a single string
+        string logContent = string.Join("\n", combatLog);
+
+        // Set the text content of the log Text component
+        logText.text = logContent;
+
+        // Scroll the log to the bottom to display the latest entry
+        Canvas.ForceUpdateCanvases(); // Ensure UI layout is updated before scrolling
     }
 
 }

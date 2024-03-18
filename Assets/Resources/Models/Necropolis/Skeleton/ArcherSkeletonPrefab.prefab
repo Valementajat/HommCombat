@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1586149372362889873}
   - component: {fileID: 301554163519639356}
   m_Layer: 0
-  m_Name: SkeletonPrefab
+  m_Name: ArcherSkeletonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
