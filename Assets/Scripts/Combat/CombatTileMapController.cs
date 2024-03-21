@@ -15,14 +15,16 @@ public class CombatTilemapController : MonoBehaviour
     private GameObject[] modelsToPlace;
     public CombatGridManager gridManager;
     public CombatManager combatManager;
-     private Vector3Int clickedTilePosition; // Variable to store the clicked tile position
 
+    public int difficulty;
+    private int numberOfObjects;
 
     public int combatWidth = 16;
     public int combatHeight = 14;
 
-    public void Initialize(int CombatWidth, int CombatHeight)
+    public void Initialize(int CombatWidth, int CombatHeight, int passedDifficulty)
     {
+        this.difficulty = passedDifficulty;
         this.combatWidth = CombatWidth;
         this.combatHeight = CombatHeight;
         if (tilemap != null && combatPlanePrefab != null)
@@ -59,9 +61,27 @@ public class CombatTilemapController : MonoBehaviour
         // Set the plane size
         SetPlaneSize();
 
-        // Place a random number of models on the Tilemap
-        PlaceRandomModels();
-    }
+        switch (difficulty)
+        {
+            case 1: // Easy
+                numberOfObjects = Random.Range(2, 6); // Randomly place 2 to 5 objects
+                break;
+            case 2: // Normal
+                numberOfObjects = Random.Range(4, 8); // Randomly place 3 to 6 objects
+                break;
+            case 3: // Hard
+                numberOfObjects = Random.Range(5, 10); // Randomly place 4 to 7 objects
+                break;
+            case 4: // Random
+                numberOfObjects = Random.Range(2, 8); // Randomly place 2 to 7 objects
+                break;
+            default:
+                Debug.LogError("Invalid difficulty level.");
+                break;
+        }
+            // Place a random number of models on the Tilemap
+            PlaceRandomModels();
+        }
 
     void SetTilemapSize(int width, int height)
     {
@@ -103,7 +123,7 @@ public class CombatTilemapController : MonoBehaviour
 {
     GameObject.Destroy(combatPlanePrefab.transform.GetChild(i).gameObject);
 }
-    int numberOfModelsToPlace = Random.Range(2, 6);
+    int numberOfModelsToPlace = numberOfObjects;
 
     List<GameObject> shuffledModels = new List<GameObject>(modelsToPlace);
     ShuffleList(shuffledModels);

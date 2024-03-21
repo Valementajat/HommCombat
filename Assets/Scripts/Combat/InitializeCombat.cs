@@ -17,20 +17,17 @@ public class InitializeCombat : MonoBehaviour
     public int combatHeight = 14;
 
     private Vector2 combatAreaSize;
-
-    void Start()
-    {
-
-        InitializeGame();
-    }
-
+    private int difficulty = 1;
+  
   // void InitializeGame(Player player, Player enemyPlayer)
-    void InitializeGame()
+    public void InitializeGame(int passedDifficulty)
     {
+         difficulty = passedDifficulty;
+
         if (gridManager != null && tilemapController != null)
         {
             gridManager.InitializeGrid(combatWidth, combatHeight);
-            tilemapController.Initialize(combatWidth, combatHeight);
+            tilemapController.Initialize(combatWidth, combatHeight,difficulty);
             //gridManager.DisplayGridInConsole();
             combatAreaSize = new Vector2(combatWidth, combatHeight);
             cameraMovement.AdjustCamera();
@@ -39,21 +36,17 @@ public class InitializeCombat : MonoBehaviour
             Player player = new ();
             player.AddHero(new Hero("Necromancer"));
             createPlayerArmy = new CreatePlayerArmy();
-/*             createPlayerArmy.CreateArmy(player, 1); 
- */            createPlayerArmy.CreateArchers(player, 1); 
+            createPlayerArmy.CreateArmy(player, difficulty, true); 
 
             Player enemyplayer = new ();
             enemyplayer.AddHero(new Hero("Knight"));
-            createPlayerArmy.CreateArmy(enemyplayer, 3); 
+            createPlayerArmy.CreateArmy(enemyplayer, difficulty, false); 
             // for testing purposes
-
-
-            // Maybe pass the hero number 
+         
             combatManager.InitializeCombat(player, enemyplayer);
             
 
-           // CreatePlayerArmy createPlayerArmyScript = gameObject.AddComponent<CreatePlayerArmy>();
-           // combatManager.StartCombat();
+        
 
         }
         else
@@ -71,7 +64,7 @@ public class InitializeCombat : MonoBehaviour
     public void RestartGame(){
         
         
-        InitializeGame();
+        InitializeGame(difficulty);
 
     }
 }

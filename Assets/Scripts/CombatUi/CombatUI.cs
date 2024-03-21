@@ -7,11 +7,16 @@ public class CombatUI : MonoBehaviour
 {
     public CombatManager combatManager; // Reference to your CombatManager script
     public GameObject unitDisplayPrefab;
+
+    public GameObject GameEndMenu;
+
      public GameObject unitDisplayPrefabBig; // Reference to your UnitDisplayPrefab
-    public Transform unitDisplayParent; // Parent transform for instantiated unit displays
-    public TextMeshProUGUI  unitListText; // Reference to your UI Text element
+    public GameObject GameEndUnitDisplayPrefab; 
+    public Transform unitDisplayParent;
+    //public Transform gameEndUnitDisplayParent; // Parent transform for instantiated unit displays
 
 
+    public TextMeshProUGUI  GameEndText;
 
     public TextMeshProUGUI logText; 
     private List<string> combatLog = new List<string>();
@@ -19,7 +24,7 @@ public class CombatUI : MonoBehaviour
     public void InstantiateUnitDisplays(List<Unit> turnOrder)
 {
    
-
+    GameEndMenu.SetActive(false);
     createUnitDisplay(turnOrder);
     // Ensure combatManager and references are not null
    
@@ -70,7 +75,7 @@ public class CombatUI : MonoBehaviour
                 unitImage.sprite = unit.UnitSprite;
 
                 // Optionally, display the unit's name or other information
-                 unitText = unitDisplay.GetComponentInChildren<TextMeshProUGUI>();
+                unitText = unitDisplay.GetComponentInChildren<TextMeshProUGUI>();
                 unitText.text = unit.NumberOfUnits.ToString(); // Assuming NumberOfUnits is a property in your Unit class
 
                 // Set the background image based on whether the unit is friendly or a foe
@@ -131,6 +136,115 @@ public void CleanCombatEvent()
 
         // Scroll the log to the bottom to display the latest entry
         Canvas.ForceUpdateCanvases(); // Ensure UI layout is updated before scrolling
+    }
+
+     public void GameOver(List<Unit> allUnits, int result)
+    {
+        GameEndMenu.SetActive(true);
+        string resultText = "";
+        if (result == 0)
+        {
+            resultText = "Draw!";
+        }
+        else if (result == 1)
+        {
+            resultText = "Victory!";
+        }
+        else if (result == -1)
+        {
+            resultText = "Defeat!";
+        }
+        GameEndText.text = resultText;
+        float EnemyInitialX = -312.6f;
+        float EnemyInitialY = -366.5f;
+        float PlayerIntialX = -312.6f;
+        float PlayerIntialY = -150f;
+
+        int playerDisplaysCreated = 0;
+        int enemyDisplaysCreated = 0;
+
+       //-150, -85,5
+
+        // -265.1, -452
+        if (GameEndUnitDisplayPrefab != null)
+        {   foreach (Unit unit in allUnits)
+            {
+                
+                if (!unit.IsPlayerUnit && (unit.AbsoluteMaxHitPoints / unit.HitPointsPerUnit) > unit.NumberOfUnits)
+                {
+                    int unitsLost = (unit.AbsoluteMaxHitPoints / unit.HitPointsPerUnit) - unit.NumberOfUnits;
+                    GameObject unitDisplay = Instantiate(GameEndUnitDisplayPrefab, GameEndMenu.transform);
+                
+                    Image unitImage = unitDisplay.transform.Find("Image").GetComponent<Image>();
+                    unitImage.sprite = unit.UnitSprite;
+                    TextMeshProUGUI unitText = unitDisplay.GetComponentInChildren<TextMeshProUGUI>();
+                    unitText.text = unitsLost.ToString();
+                    
+
+                    unitDisplay.transform.localPosition = new Vector3(EnemyInitialX, EnemyInitialY, 0f);
+                   enemyDisplaysCreated++;
+                   EnemyInitialX += 90f;
+                   if(enemyDisplaysCreated == 4){
+                        EnemyInitialY = -452f;
+                        EnemyInitialX = -265.1f;
+                   }
+                    
+                }else if (unit.IsPlayerUnit && (unit.AbsoluteMaxHitPoints / unit.HitPointsPerUnit) > unit.NumberOfUnits)
+                {
+                    int unitsLost = (unit.AbsoluteMaxHitPoints / unit.HitPointsPerUnit) - unit.NumberOfUnits;
+                    GameObject unitDisplay = Instantiate(GameEndUnitDisplayPrefab, GameEndMenu.transform);
+                
+                    Image unitImage = unitDisplay.transform.Find("Image").GetComponent<Image>();
+                    unitImage.sprite = unit.UnitSprite;
+                    TextMeshProUGUI unitText = unitDisplay.GetComponentInChildren<TextMeshProUGUI>();
+                    unitText.text = unitsLost.ToString();
+                    
+
+                    unitDisplay.transform.localPosition = new Vector3(PlayerIntialX, PlayerIntialY, 0f);
+                    playerDisplaysCreated++; // Increment the count of player displays created
+                    PlayerIntialX += 90f;
+                    if(playerDisplaysCreated == 4){
+                        PlayerIntialY = -235.5f;
+                        PlayerIntialX = -265.1f;
+                   }
+                }
+                
+            }
+
+            while (enemyDisplaysCreated < 7)
+            {
+                GameObject unitDisplay = Instantiate(GameEndUnitDisplayPrefab, GameEndMenu.transform);
+                unitDisplay.transform.localPosition = new Vector3(EnemyInitialX, EnemyInitialY, 0f);
+                EnemyInitialX += 90f;
+                enemyDisplaysCreated++;
+                Image unitImage = unitDisplay.transform.Find("Image").GetComponent<Image>();
+                unitImage.gameObject.SetActive(false);
+                
+                 if(enemyDisplaysCreated == 4){
+                        EnemyInitialY = -452f;
+                        EnemyInitialX = -265.1f;
+                   }
+            }
+            while (playerDisplaysCreated < 7)
+            {
+                GameObject unitDisplay = Instantiate(GameEndUnitDisplayPrefab, GameEndMenu.transform);
+                unitDisplay.transform.localPosition = new Vector3(PlayerIntialX, PlayerIntialY, 0f);
+                PlayerIntialX += 90f;
+                playerDisplaysCreated++;
+                Image unitImage = unitDisplay.transform.Find("Image").GetComponent<Image>();
+                unitImage.gameObject.SetActive(false);
+
+                if(playerDisplaysCreated == 4){
+                        PlayerIntialY = -235.5f;
+                        PlayerIntialX = -265.1f;
+                }
+            }
+                        
+        }else
+        {
+            Debug.LogError("GameEndUnitDisplayPrefab or gameEndUnitDisplayParent is not assigned!");
+        }
+
     }
 
 }

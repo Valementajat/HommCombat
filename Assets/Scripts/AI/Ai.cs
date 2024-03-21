@@ -17,14 +17,14 @@ public class Ai : MonoBehaviour
 
    public void AiTurn(Unit currentUnit){
 
-   /*  currentAiUnit = currentUnit;
+    currentAiUnit = currentUnit;
     bool canAttack = CheckAndAttackPlayerUnits(currentAiUnit);
 
         if (!canAttack)
         {
             // If no attack options are available, find the closest player unit and move towards it
             MoveTowardsClosestPlayerUnit(currentAiUnit);
-        }  */
+        } 
    }
 
 
@@ -160,9 +160,9 @@ private Vector3Int FindClosestFreePosition(Vector3Int currentPosition, Vector3In
                     unitMovement.MoveUnit(currentAiUnit, tilemap.GetCellCenterWorld(adjacentTile));
                    
                     // Attack the player unit
-                    /* currentAiUnit.Attacker = true;
+                     currentAiUnit.Attacker = true;
                     currentAiUnit.Attack(unit, combatManager);
-                    currentAiUnit.Attacker = false; */
+                    currentAiUnit.Attacker = false; 
                     return true; // Attack successful
                 }
                 else

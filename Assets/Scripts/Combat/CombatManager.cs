@@ -64,9 +64,7 @@ public class CombatManager : MonoBehaviour
             }
 
         unitPlacement.InitializeUnits(playerUnits, enemyUnits);
-        // Add units to the player's army
-         // Example: 5 Skeletons in the player's army
-        // Add more units as needed
+       
         SortUnitsBySpeed();
          foreach (Unit unit in allUnitsInPlay)
         {
@@ -158,6 +156,8 @@ public class CombatManager : MonoBehaviour
         // Handle combat end (e.g., victory, defeat)
         string COmbatOver = "Combat is over";
         LogCombatEvent(COmbatOver);
+        int result = DetermineWinner();
+        combatUI.GameOver(allUnits, result);
     }
 
 /*     private void WaitForKeyPress()
@@ -208,6 +208,33 @@ private bool IsCombatOver()
         // Combat is over if either all player units or all enemy units are defeated
         return noMorePlayerUnits || noMoreEnemyUnits;
     }
+
+    private int DetermineWinner()
+{
+    bool noMorePlayerUnits = !allUnitsInPlay.Any(unit => unit.IsPlayerUnit && unit.HitPoints > 0);
+    bool noMoreEnemyUnits = !allUnitsInPlay.Any(unit => !unit.IsPlayerUnit && unit.HitPoints > 0);
+
+    if (noMorePlayerUnits && noMoreEnemyUnits)
+    {
+        // Draw
+        return 0;
+    }
+    else if (noMorePlayerUnits)
+    {
+        // Enemy wins
+        return -1;
+    }
+    else if (noMoreEnemyUnits)
+    {
+        // Player wins
+        return 1;
+    }
+    else
+    {
+        // Combat is not over yet
+        return 2;
+    }
+}
 
 
 

@@ -24,6 +24,9 @@ public abstract class Unit
     public int[] AttackDamageRange { get; protected set; }
 
     public int MaxHitPoints => HitPointsPerUnit * NumberOfUnits;
+    public int AbsoluteMaxHitPoints { get; set; }
+     
+
     public int HitPoints { get; protected set; }
 
     public int AttackDamage => AttackDamagePerUnit * NumberOfUnits;
@@ -57,6 +60,9 @@ public abstract class Unit
         Position = Vector3Int.zero; 
         AttackDamageRange = attackDamageRange;
         Attacker = false;
+
+        AbsoluteMaxHitPoints = HitPointsPerUnit * NumberOfUnits;
+
     } 
 
     public virtual void Attack(Unit target, CombatManager combatManager)
